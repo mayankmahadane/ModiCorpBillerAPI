@@ -10,6 +10,16 @@ Feature: Verify PayBill API
       * request requestJson
     When method POST
     Then status 201
+      * match response.transactionId == '#notnull'
+
+  @Negative
+  Scenario: Verify error for low balance in wallet to make bill payment
+
+      * set requestJson.billAmount = 99999999
+      * request requestJson
+    When method POST
+    Then status 400
+      * match response.errorMessage == 'Insufficient balance in wallet to make payment'
 
   @Negative
   Scenario: Verify error for invalid Biller id
@@ -32,7 +42,7 @@ Feature: Verify PayBill API
   @Negative
   Scenario: Verify error for invalid Bill Date
 
-      * set requestJson.billDate = "1947-08-15"
+      * set requestJson.billDate = "Jan-22"
       * request requestJson
     When method POST
     Then status 400

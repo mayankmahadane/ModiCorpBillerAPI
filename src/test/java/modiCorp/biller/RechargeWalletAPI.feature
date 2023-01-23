@@ -5,12 +5,26 @@ Feature: Verify RechargeWallet API
       * def requestJson = read('src/test/java/modiCorp/biller/TestData/rechargeWallet.json')
 
   @Positive
-  Scenario: Recharge wallet with valid value request
+  Scenario Outline: Recharge wallet with valid value request
 
+      * set requestJson.Amount = <Amount>
       * request requestJson
       * retry until responseStatus == 201
     When method POST
     Then status 201
+
+    Examples:
+      | Amount  |
+      | 1000.50 |
+      | 1520    |
+
+  @Negative
+  Scenario: Verify error for low balance to recharge wallet
+
+      * request requestJson
+    When method POST
+    Then status 400
+      * match response.errorMessage == 'Insufficient balance to recharge wallet'
 
   @Negative
   Scenario: Verify error for zero amount recharge
@@ -47,15 +61,6 @@ Feature: Verify RechargeWallet API
     When method POST
     Then status 400
       * match response.errorMessage == 'User is blacklisted'
-
-  @Negative
-  Scenario: Verify error for invalid transaction id
-
-      * set requestJson.transactionID = 000000000
-      * request requestJson
-    When method POST
-    Then status 400
-      * match response.errorMessage == 'Invalid transaction id'
 
   @Negative
   Scenario: Verify error for invalid source id

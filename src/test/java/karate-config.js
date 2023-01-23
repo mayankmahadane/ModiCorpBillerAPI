@@ -7,8 +7,7 @@ function fn() {
     env = 'qa';
   }
   var config = {
-    env: env,
-    myVarName: 'someValue'
+    env: env
   }
   if (env == 'qa') {
     config.getBillersApiUrl = 'https://mastercard.biller.com/getbillers';

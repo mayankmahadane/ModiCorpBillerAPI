@@ -10,6 +10,8 @@ Feature: Verify Registration API
       * request requestJson
     When method POST
     Then status 201
+      * match response.userID == '#notnull'
+      * match response.status == 'Active'
 
   @Negative
   Scenario: Verify API returns error for already registered email id
