@@ -1,0 +1,8 @@
+1) All Api calls are authenticated with OAuth2 token
+2) As of now there is no limit defined for maximum amount in wallet
+3) On successfull user registration, api will return generated customer id
+4) At a time customer can do only one utility payment in a single transaction
+5) Assuming only one environment for now that is QA. Framework is open for multiple environments
+6) In case of blacklisted or suspended user, getCustomer API returns customer status as Inactive
+7) Considering unpaid bills are shown only for most recent month
+8) Considering that getBillers API will return arraylist of JSON object having biller details as Utility type, vendor name, vendor id
