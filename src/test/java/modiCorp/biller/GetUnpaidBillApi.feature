@@ -7,6 +7,8 @@ Feature: Verify GetUnpaidBill API
   @Positive
   Scenario Outline: Get unpaid bill for a particular utility
 
+      * def authCall = karate.call('AuthToken.feature@GetAuthToken')
+      * header Auth = 'Bearer '+authCall.response.token
       * set requestJson.Utility = <Utility>
       * set requestJson.Vendor = <Vendor>
       * set requestJson.CustID = <CustomerID>
@@ -15,6 +17,10 @@ Feature: Verify GetUnpaidBill API
     When method POST
     Then status 200
       * match response == '#notnull'
+      * match response.month == '#notnull'
+      * match response.billerID == '#notnull'
+      * match response.billAmount == '#notnull'
+      * match response.customerID == '#notnull'
 
     Examples:
     | Utility       | Vendor   | CustomerID |
@@ -25,6 +31,8 @@ Feature: Verify GetUnpaidBill API
   @Negative
   Scenario Outline: Verify error for invalid value for Utility
 
+      * def authCall = karate.call('AuthToken.feature@GetAuthToken')
+      * header Auth = 'Bearer '+authCall.response.token
       * set requestJson.Utility = 'invalid'
       * request requestJson
     When method POST
@@ -34,6 +42,8 @@ Feature: Verify GetUnpaidBill API
   @Negative
   Scenario: Verify error for invalid value for Vendor
 
+      * def authCall = karate.call('AuthToken.feature@GetAuthToken')
+      * header Auth = 'Bearer '+authCall.response.token
       * set requestJson.Vendor = 'invalid'
       * request requestJson
     When method POST
@@ -43,8 +53,20 @@ Feature: Verify GetUnpaidBill API
   @Negative
   Scenario: Verify error for invalid value for CustomerID
 
+      * def authCall = karate.call('AuthToken.feature@GetAuthToken')
+      * header Auth = 'Bearer '+authCall.response.token
       * set requestJson.CustID = 00000
       * request requestJson
     When method POST
     Then status 400
       * match response.errorMessage == 'Invalid Customer ID'
+
+  @Positive
+  Scenario: Verify that unpaid bill is not shown after successful bill payment
+
+      * def authCall = karate.call('AuthToken.feature@GetAuthToken')
+      * header Auth = 'Bearer '+authCall.response.token
+      * karate.call('PayBillAPI.feature@PayBillForMonth', {"requestJson.custID" : 12345})
+      * request requestJson
+    When method POST
+    Then status 204

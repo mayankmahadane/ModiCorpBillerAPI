@@ -7,15 +7,21 @@ Feature: Verify Registration API
   @Positive
   Scenario: Register new user with valid email id
 
+      * def authCall = karate.call('AuthToken.feature@GetAuthToken')
+      * header Auth = 'Bearer '+authCall.response.token
       * request requestJson
     When method POST
     Then status 201
       * match response.userID == '#notnull'
       * match response.status == 'Active'
+      * def custDetail = karate.call('getCustomer.feature@GetCustomerDetail',{'emailID' : requestJson.emailID})
+      * match custDetail.response.fundBalance == 0
 
   @Negative
   Scenario: Verify API returns error for already registered email id
 
+      * def authCall = karate.call('AuthToken.feature@GetAuthToken')
+      * header Auth = 'Bearer '+authCall.response.token
       * set requestJson.email = 'mmahadane@gmail.com'
       * request requestJson
     When method POST
@@ -25,6 +31,8 @@ Feature: Verify Registration API
   @Negative
   Scenario: Verify API returns error for invalid email id
 
+      * def authCall = karate.call('AuthToken.feature@GetAuthToken')
+      * header Auth = 'Bearer '+authCall.response.token
       * set requestJson.email = "invalid@invalid.com"
       * request requestJson
     When method POST

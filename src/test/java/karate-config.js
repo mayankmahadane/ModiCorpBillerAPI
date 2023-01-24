@@ -15,6 +15,8 @@ function fn() {
     config.payBillApiUrl = 'https://mastercard.biller.com/paybillfromwallet';
     config.rechargeWalletApiUrl = 'https://mastercard.biller.com/rechargewallet';
     config.registrationApiUrl = 'https://mastercard.biller.com/registeruser';
+    config.authTokenUrl = 'https://generatetoken.modicorp.com/biller'
+    config.getCustomerApiUrl = 'https://mastercard.biller.com/getcustomer';
   } else if (env == 'stage') {
 
   }
